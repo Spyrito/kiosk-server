@@ -12,14 +12,12 @@ import java.util.UUID;
 @Table(name = "orders")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 public class OrderEntity {
 
     @Id
     @GeneratedValue
-    private UUID id;
+    private Long id;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

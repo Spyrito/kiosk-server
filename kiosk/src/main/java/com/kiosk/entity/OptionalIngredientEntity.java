@@ -7,9 +7,7 @@ import lombok.*;
 @Table(name = "optional_ingredients")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 public class OptionalIngredientEntity {
 
     @Id

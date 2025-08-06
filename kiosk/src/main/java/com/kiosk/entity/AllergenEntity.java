@@ -8,9 +8,7 @@ import lombok.*;
 @Table(name = "ingredients")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 public class AllergenEntity {
 
     @Id

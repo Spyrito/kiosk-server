@@ -4,7 +4,6 @@ import jakarta.persistence.metamodel.ListAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
 import java.math.BigDecimal;
-import java.util.UUID;
 import javax.annotation.processing.Generated;
 
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
@@ -16,7 +15,7 @@ public abstract class ItemEntity_ {
 	public static volatile SingularAttribute<ItemEntity, String> name;
 	public static volatile SingularAttribute<ItemEntity, String> description;
 	public static volatile ListAttribute<ItemEntity, IngredientEntity> ingredients;
-	public static volatile SingularAttribute<ItemEntity, UUID> id;
+	public static volatile SingularAttribute<ItemEntity, Long> id;
 	public static volatile SingularAttribute<ItemEntity, CategoryEntity> category;
 	public static volatile ListAttribute<ItemEntity, AllergenEntity> allergens;
 

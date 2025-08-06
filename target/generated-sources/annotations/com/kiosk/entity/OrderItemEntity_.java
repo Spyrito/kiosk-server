@@ -3,7 +3,6 @@ package com.kiosk.entity;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
 import java.math.BigDecimal;
-import java.util.UUID;
 import javax.annotation.processing.Generated;
 
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
@@ -11,7 +10,7 @@ import javax.annotation.processing.Generated;
 public abstract class OrderItemEntity_ {
 
 	public static volatile SingularAttribute<OrderItemEntity, Integer> quantity;
-	public static volatile SingularAttribute<OrderItemEntity, UUID> id;
+	public static volatile SingularAttribute<OrderItemEntity, Long> id;
 	public static volatile SingularAttribute<OrderItemEntity, ItemEntity> menuItem;
 	public static volatile SingularAttribute<OrderItemEntity, BigDecimal> priceAtOrderTime;
 	public static volatile SingularAttribute<OrderItemEntity, String> customizations;

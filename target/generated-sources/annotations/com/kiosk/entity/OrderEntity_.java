@@ -5,7 +5,6 @@ import jakarta.persistence.metamodel.ListAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import javax.annotation.processing.Generated;
 
 @Generated(value = "org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor")
@@ -16,7 +15,7 @@ public abstract class OrderEntity_ {
 	public static volatile SingularAttribute<OrderEntity, Integer> orderNumber;
 	public static volatile SingularAttribute<OrderEntity, Boolean> paid;
 	public static volatile SingularAttribute<OrderEntity, String> kioskIdentifier;
-	public static volatile SingularAttribute<OrderEntity, UUID> id;
+	public static volatile SingularAttribute<OrderEntity, Long> id;
 	public static volatile ListAttribute<OrderEntity, OrderItemEntity> items;
 	public static volatile SingularAttribute<OrderEntity, OrderStatus> status;
 
