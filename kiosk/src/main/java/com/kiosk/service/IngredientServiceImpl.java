@@ -1,12 +1,8 @@
 package com.kiosk.service;
 
-import com.kiosk.dto.CategoryDTO;
 import com.kiosk.dto.IngredientDTO;
-import com.kiosk.dto.mapper.CategoryMapper;
 import com.kiosk.dto.mapper.IngredientMapper;
-import com.kiosk.entity.CategoryEntity;
 import com.kiosk.entity.IngredientEntity;
-import com.kiosk.entity.repository.CategoryRepository;
 import com.kiosk.entity.repository.IngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
