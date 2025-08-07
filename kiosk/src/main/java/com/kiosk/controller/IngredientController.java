@@ -16,7 +16,7 @@ public class IngredientController {
     private IngredientService ingredientService;
 
     @GetMapping("/ingredients")
-    public List<IngredientDTO> getCategories() {
+    public List<IngredientDTO> getIngredient() {
         return ingredientService.getAll();
     }
     @PostMapping("/ingredients")

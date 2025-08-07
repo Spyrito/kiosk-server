@@ -1,6 +1,7 @@
 package com.kiosk.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -14,8 +15,10 @@ public class OptionalIngredientEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private int extraPrice;
 
     @ManyToOne

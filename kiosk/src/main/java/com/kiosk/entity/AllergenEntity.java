@@ -5,7 +5,7 @@ import lombok.*;
 
 
 @Entity
-@Table(name = "ingredients")
+@Table(name = "allergen")
 @Getter
 @Setter
 
