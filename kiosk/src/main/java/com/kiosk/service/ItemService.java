@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ItemService {
     List<ItemDTO> getAll();
-    //ItemDTO addItem(ItemDTO itemDTO);
+    ItemDTO addItem(ItemDTO itemDTO);
 
 }

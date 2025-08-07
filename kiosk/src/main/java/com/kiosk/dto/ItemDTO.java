@@ -1,11 +1,9 @@
 package com.kiosk.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
@@ -24,8 +22,9 @@ public class ItemDTO {
     private String imageUrl;
     private Long categoryId;
 
-    private List<IngredientDTO> ingredients;
-    private List<AllergenDTO> allergens;
-    private List<OptionalIngredientDTO> optionalIngredients;
+    private List<Long> ingredientIds;
+    private List<Long> allergenIds;
+    private List<Long> optionalIngredientIds;
+
 }
 

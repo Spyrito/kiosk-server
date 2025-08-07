@@ -4,13 +4,12 @@ import com.kiosk.dto.CategoryDTO;
 import com.kiosk.dto.ItemDTO;
 import com.kiosk.dto.mapper.CategoryMapper;
 import com.kiosk.dto.mapper.ItemMapper;
-import com.kiosk.entity.CategoryEntity;
-import com.kiosk.entity.ItemEntity;
-import com.kiosk.entity.repository.CategoryRepository;
-import com.kiosk.entity.repository.ItemRepository;
+import com.kiosk.entity.*;
+import com.kiosk.entity.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,6 +23,18 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private IngredientRepository ingredientRepository;
+
+    @Autowired
+    private AllergenRepository allergenRepository;
+
+    @Autowired
+    private OptionalIngredientRepository optionalIngredientRepository;
+
     @Override
     public List<ItemDTO> getAll() {
         return itemRepository.findAll().stream()
@@ -31,58 +42,47 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    /*
     @Override
     public ItemDTO addItem(ItemDTO itemDTO) {
-        // Načteme kategorii, musí existovat
-        CategoryEntity category = categoryRepository.findById(UUID.fromString(itemDTO.getCategoryId().toString()))
-                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        ItemEntity entity = new ItemEntity();
 
-        // Vytvoříme item entity
-        ItemEntity item = new ItemEntity();
-        item.setName(itemDTO.getName());
-        item.setDescription(itemDTO.getDescription());
-        item.setPrice(itemDTO.getPrice());
-        item.setCategory(category);
+        entity.setName(itemDTO.getName());
+        entity.setDescription(itemDTO.getDescription());
+        entity.setPrice(itemDTO.getPrice());
+        entity.setImageUrl(itemDTO.getImageUrl());
+        entity.setAvailableQuantity(100); // nastav dle potřeby
+
+        CategoryEntity category = categoryRepository.findById(itemDTO.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        entity.setCategory(category);
 
         // Ingredience
-        if (itemDTO.getIngredients() != null) {
-            List<IngredientEntity> ingredients = itemDTO.getIngredients().stream()
-                    .map(dto -> {
-                        IngredientEntity ingredient = new IngredientEntity();
-                        ingredient.setName(dto.getName());
-                        ingredient.setItem(item);
-                        return ingredient;
-                    }).collect(Collectors.toList());
-            item.setIngredients(ingredients);
-        } else {
-            item.setIngredients(Collections.emptyList());
+        List<IngredientEntity> ingredients = new ArrayList<>();
+        if (itemDTO.getIngredientIds() != null && !itemDTO.getIngredientIds().isEmpty()) {
+            ingredients = ingredientRepository.findAllById(itemDTO.getIngredientIds());
         }
+        ingredients.forEach(ingredient -> ingredient.setItem(entity));
+        entity.setIngredients(ingredients);
 
         // Alergeny
-        if (itemDTO.getAllergens() != null) {
-            List<AllergenEntity> allergens = itemDTO.getAllergens().stream()
-                    .map(dto -> {
-                        AllergenEntity allergen = new AllergenEntity();
-                        allergen.setName(dto.getName());
-                        allergen.setItem(item);
-                        return allergen;
-                    }).collect(Collectors.toList());
-            item.setAllergens(allergens);
-        } else {
-            item.setAllergens(Collections.emptyList());
+        List<AllergenEntity> allergens = new ArrayList<>();
+        if (itemDTO.getAllergenIds() != null && !itemDTO.getAllergenIds().isEmpty()) {
+            allergens = allergenRepository.findAllById(itemDTO.getAllergenIds());
         }
+        allergens.forEach(allergen -> allergen.setItem(entity));
+        entity.setAllergens(allergens);
 
-        // Volitelné ingredience (optionalIngredients) - pokud chceš, obdobně jako výše (není v entitách, uprav dle potřeby)
-        // ...
+        // Volitelné ingredience
+        List<OptionalIngredientEntity> optionalIngredients = new ArrayList<>();
+        if (itemDTO.getOptionalIngredientIds() != null && !itemDTO.getOptionalIngredientIds().isEmpty()) {
+            optionalIngredients = optionalIngredientRepository.findAllById(itemDTO.getOptionalIngredientIds());
+        }
+        optionalIngredients.forEach(opt -> opt.setItem(entity));
+        entity.setOptionalIngredients(optionalIngredients);
 
-        // Uložíme položku (cascade uloží i ingredience a alergeny)
-        ItemEntity saved = itemRepository.save(item);
-
-        // Převod zpět na DTO (lze udělat mapperem)
-        return mapToDTO(saved);
+        ItemEntity saved = itemRepository.save(entity);
+        return itemMapper.toDTO(saved);
     }
 
-     */
 
 }

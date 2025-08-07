@@ -2,6 +2,7 @@ package com.kiosk.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.validator.constraints.URL;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,8 +29,12 @@ public class ItemEntity {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @URL(message = "Invalid image URL")
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "available_quantity")
-    private Integer availableQuantity; // -1 = neomezeně
+    private Integer availableQuantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -40,5 +45,9 @@ public class ItemEntity {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AllergenEntity> allergens;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OptionalIngredientEntity> optionalIngredients;
+
 }
 

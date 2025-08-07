@@ -19,11 +19,11 @@ public class ItemController {
     public List<ItemDTO> getItems() {
         return itemService.getAll();
     }
-    /*
-    @PostMapping
+
+    @PostMapping("/items")
     public ItemDTO addItem(@RequestBody ItemDTO itemDTO) {
         return itemService.addItem(itemDTO);
     }
-     */
+
 
 }
