@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -22,25 +23,26 @@ public interface ItemMapper {
     ItemDTO toDTO(ItemEntity entity);
     ItemEntity toEntity(ItemDTO dto);
 
-    default List<Long> mapIngredientIds(List<IngredientEntity> ingredients) {
+    default List<Long> mapIngredientIds(Set<IngredientEntity> ingredients) {
         if (ingredients == null) return Collections.emptyList();
         return ingredients.stream()
                 .map(IngredientEntity::getId)
                 .collect(Collectors.toList());
     }
 
-    default List<Long> mapAllergenIds(List<AllergenEntity> allergens) {
+    default List<Long> mapAllergenIds(Set<AllergenEntity> allergens) {
         if (allergens == null) return Collections.emptyList();
         return allergens.stream()
                 .map(AllergenEntity::getId)
                 .collect(Collectors.toList());
     }
 
-    default List<Long> mapOptionalIds(List<OptionalIngredientEntity> optionals) {
+    default List<Long> mapOptionalIds(Set<OptionalIngredientEntity> optionals) {
         if (optionals == null) return Collections.emptyList();
         return optionals.stream()
                 .map(OptionalIngredientEntity::getId)
                 .collect(Collectors.toList());
     }
+
 }
 

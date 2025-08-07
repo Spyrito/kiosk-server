@@ -9,9 +9,7 @@ import com.kiosk.entity.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +40,6 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public ItemDTO addItem(ItemDTO itemDTO) {
         ItemEntity entity = new ItemEntity();
 
@@ -50,39 +47,41 @@ public class ItemServiceImpl implements ItemService {
         entity.setDescription(itemDTO.getDescription());
         entity.setPrice(itemDTO.getPrice());
         entity.setImageUrl(itemDTO.getImageUrl());
-        entity.setAvailableQuantity(itemDTO.getAvailableQuantity()); // nastav dle potřeby
+        entity.setAvailableQuantity(100); // nastav dle potřeby
 
+        // Kategorie
         CategoryEntity category = categoryRepository.findById(itemDTO.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
         entity.setCategory(category);
 
         // Ingredience
-        List<IngredientEntity> ingredients = new ArrayList<>();
         if (itemDTO.getIngredientIds() != null && !itemDTO.getIngredientIds().isEmpty()) {
-            ingredients = ingredientRepository.findAllById(itemDTO.getIngredientIds());
+            Set<IngredientEntity> ingredients = new HashSet<>(ingredientRepository.findAllById(itemDTO.getIngredientIds()));
+            ingredients.forEach(ingredient -> ingredient.setItem(entity));
+            entity.setIngredients(ingredients);
         }
-        ingredients.forEach(ingredient -> ingredient.setItem(entity));
-        entity.setIngredients(ingredients);
 
         // Alergeny
-        List<AllergenEntity> allergens = new ArrayList<>();
         if (itemDTO.getAllergenIds() != null && !itemDTO.getAllergenIds().isEmpty()) {
-            allergens = allergenRepository.findAllById(itemDTO.getAllergenIds());
+            Set<AllergenEntity> allergens = new HashSet<>(allergenRepository.findAllById(itemDTO.getAllergenIds()));
+            allergens.forEach(allergen -> allergen.setItem(entity));
+            entity.setAllergens(allergens);
         }
-        allergens.forEach(allergen -> allergen.setItem(entity));
-        entity.setAllergens(allergens);
 
         // Volitelné ingredience
-        List<OptionalIngredientEntity> optionalIngredients = new ArrayList<>();
         if (itemDTO.getOptionalIngredientIds() != null && !itemDTO.getOptionalIngredientIds().isEmpty()) {
-            optionalIngredients = optionalIngredientRepository.findAllById(itemDTO.getOptionalIngredientIds());
+            Set<OptionalIngredientEntity> optionalIngredients = new HashSet<>(optionalIngredientRepository.findAllById(itemDTO.getOptionalIngredientIds()));
+            optionalIngredients.forEach(opt -> opt.setItem(entity));
+            entity.setOptionalIngredients(optionalIngredients);
         }
-        optionalIngredients.forEach(opt -> opt.setItem(entity));
-        entity.setOptionalIngredients(optionalIngredients);
 
         ItemEntity saved = itemRepository.save(entity);
         return itemMapper.toDTO(saved);
     }
+
+
+
+
 
 
 }

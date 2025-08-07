@@ -46,14 +46,28 @@ public class ItemEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<IngredientEntity> ingredients;
+    @ManyToMany
+    @JoinTable(
+            name = "item_ingredient",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    private Set<IngredientEntity> ingredients;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AllergenEntity> allergens;
+    @ManyToMany
+    @JoinTable(
+            name = "item_allergen",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "allergen_id")
+    )
+    private Set<AllergenEntity> allergens;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OptionalIngredientEntity> optionalIngredients;
-
+    @ManyToMany
+    @JoinTable(
+            name = "item_optional_ingredient",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "optional_ingredient_id")
+    )
+    private Set<OptionalIngredientEntity> optionalIngredients;
 }
 
