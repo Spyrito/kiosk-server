@@ -21,6 +21,7 @@ public class ItemDTO {
     private BigDecimal price;
     private String imageUrl;
     private Long categoryId;
+    private Integer availableQuantity;
 
     private List<Long> ingredientIds;
     private List<Long> allergenIds;

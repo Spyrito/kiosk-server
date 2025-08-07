@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
         entity.setDescription(itemDTO.getDescription());
         entity.setPrice(itemDTO.getPrice());
         entity.setImageUrl(itemDTO.getImageUrl());
-        entity.setAvailableQuantity(100); // nastav dle potřeby
+        entity.setAvailableQuantity(itemDTO.getAvailableQuantity()); // nastav dle potřeby
 
         CategoryEntity category = categoryRepository.findById(itemDTO.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
