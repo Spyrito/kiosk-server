@@ -1,10 +1,8 @@
 package com.kiosk.dto.mapper;
 
 import com.kiosk.dto.ItemDTO;
-import com.kiosk.entity.AllergenEntity;
-import com.kiosk.entity.IngredientEntity;
-import com.kiosk.entity.ItemEntity;
-import com.kiosk.entity.OptionalIngredientEntity;
+import com.kiosk.dto.ItemIngredientDTO;
+import com.kiosk.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -15,21 +13,45 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
+
     @Mapping(target = "categoryId", source = "category.id")
-    @Mapping(target = "ingredientIds", expression = "java(mapIngredientIds(entity.getIngredients()))")
+    @Mapping(target = "ingredients", expression = "java(mapItemIngredients(entity.getItemIngredients()))")
     @Mapping(target = "allergenIds", expression = "java(mapAllergenIds(entity.getAllergens()))")
     @Mapping(target = "optionalIngredientIds", expression = "java(mapOptionalIds(entity.getOptionalIngredients()))")
-
     ItemDTO toDTO(ItemEntity entity);
+
+    @Mapping(target = "itemIngredients", expression = "java(mapItemIngredientEntities(dto.getIngredients()))")
+    @Mapping(target = "category", ignore = true) // nastavíš později ve službě podle categoryId
+    @Mapping(target = "allergens", ignore = true) // nebo namapuješ později
+    @Mapping(target = "optionalIngredients", ignore = true)
     ItemEntity toEntity(ItemDTO dto);
 
-    default List<Long> mapIngredientIds(Set<IngredientEntity> ingredients) {
-        if (ingredients == null) return Collections.emptyList();
-        return ingredients.stream()
-                .map(IngredientEntity::getId)
+    // ===== Ingredience s množstvím =====
+    default List<ItemIngredientDTO> mapItemIngredients(Set<ItemIngredientEntity> entities) {
+        if (entities == null) return Collections.emptyList();
+        return entities.stream()
+                .map(e -> new ItemIngredientDTO(
+                        e.getIngredient().getId(),
+                        e.getQuantity()
+                ))
                 .collect(Collectors.toList());
     }
 
+    default Set<ItemIngredientEntity> mapItemIngredientEntities(List<ItemIngredientDTO> dtos) {
+        if (dtos == null) return Collections.emptySet();
+        return dtos.stream()
+                .map(dto -> {
+                    ItemIngredientEntity e = new ItemIngredientEntity();
+                    IngredientEntity ingredient = new IngredientEntity();
+                    ingredient.setId(dto.getIngredientId());
+                    e.setIngredient(ingredient);
+                    e.setQuantity(dto.getQuantity());
+                    return e;
+                })
+                .collect(Collectors.toSet());
+    }
+
+    // ===== Zbytek mapperů =====
     default List<Long> mapAllergenIds(Set<AllergenEntity> allergens) {
         if (allergens == null) return Collections.emptyList();
         return allergens.stream()
@@ -43,6 +65,5 @@ public interface ItemMapper {
                 .map(OptionalIngredientEntity::getId)
                 .collect(Collectors.toList());
     }
-
 }
 

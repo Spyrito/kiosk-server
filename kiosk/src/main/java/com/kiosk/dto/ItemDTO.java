@@ -23,9 +23,10 @@ public class ItemDTO {
     private Long categoryId;
     private Integer availableQuantity;
 
-    private List<Long> ingredientIds;
+    private List<ItemIngredientDTO> ingredients;
+
     private List<Long> allergenIds;
     private List<Long> optionalIngredientIds;
-
 }
+
 

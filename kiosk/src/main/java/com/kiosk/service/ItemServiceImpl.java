@@ -2,6 +2,7 @@ package com.kiosk.service;
 
 import com.kiosk.dto.CategoryDTO;
 import com.kiosk.dto.ItemDTO;
+import com.kiosk.dto.ItemIngredientDTO;
 import com.kiosk.dto.mapper.CategoryMapper;
 import com.kiosk.dto.mapper.ItemMapper;
 import com.kiosk.entity.*;
@@ -47,37 +48,49 @@ public class ItemServiceImpl implements ItemService {
         entity.setDescription(itemDTO.getDescription());
         entity.setPrice(itemDTO.getPrice());
         entity.setImageUrl(itemDTO.getImageUrl());
-        entity.setAvailableQuantity(100); // nastav dle potřeby
+        entity.setAvailableQuantity(itemDTO.getAvailableQuantity() != null ? itemDTO.getAvailableQuantity() : 100);
 
         // Kategorie
         CategoryEntity category = categoryRepository.findById(itemDTO.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found"));
         entity.setCategory(category);
 
-        // Ingredience
-        if (itemDTO.getIngredientIds() != null && !itemDTO.getIngredientIds().isEmpty()) {
-            Set<IngredientEntity> ingredients = new HashSet<>(ingredientRepository.findAllById(itemDTO.getIngredientIds()));
-            ingredients.forEach(ingredient -> ingredient.setItem(entity));
-            entity.setIngredients(ingredients);
+        // Ingredience s množstvím
+        if (itemDTO.getIngredients() != null && !itemDTO.getIngredients().isEmpty()) {
+            Set<ItemIngredientEntity> itemIngredients = new HashSet<>();
+
+            for (ItemIngredientDTO ingDto : itemDTO.getIngredients()) {
+                IngredientEntity ingredient = ingredientRepository.findById(ingDto.getIngredientId())
+                        .orElseThrow(() -> new IllegalArgumentException("Ingredient not found: " + ingDto.getIngredientId()));
+
+                ItemIngredientEntity itemIngredient = new ItemIngredientEntity();
+                itemIngredient.setItem(entity);
+                itemIngredient.setIngredient(ingredient);
+                itemIngredient.setQuantity(ingDto.getQuantity());
+
+                itemIngredients.add(itemIngredient);
+            }
+
+            entity.setItemIngredients(itemIngredients);
         }
 
         // Alergeny
         if (itemDTO.getAllergenIds() != null && !itemDTO.getAllergenIds().isEmpty()) {
             Set<AllergenEntity> allergens = new HashSet<>(allergenRepository.findAllById(itemDTO.getAllergenIds()));
-            allergens.forEach(allergen -> allergen.setItem(entity));
             entity.setAllergens(allergens);
         }
 
         // Volitelné ingredience
         if (itemDTO.getOptionalIngredientIds() != null && !itemDTO.getOptionalIngredientIds().isEmpty()) {
             Set<OptionalIngredientEntity> optionalIngredients = new HashSet<>(optionalIngredientRepository.findAllById(itemDTO.getOptionalIngredientIds()));
-            optionalIngredients.forEach(opt -> opt.setItem(entity));
+            System.out.println(optionalIngredientRepository.findAllById(itemDTO.getOptionalIngredientIds()));
             entity.setOptionalIngredients(optionalIngredients);
         }
 
         ItemEntity saved = itemRepository.save(entity);
         return itemMapper.toDTO(saved);
     }
+
 
 
 

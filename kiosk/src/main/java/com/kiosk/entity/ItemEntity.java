@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -46,13 +47,10 @@ public class ItemEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
-    @ManyToMany
-    @JoinTable(
-            name = "item_ingredient",
-            joinColumns = @JoinColumn(name = "item_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
-    )
-    private Set<IngredientEntity> ingredients;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ItemIngredientEntity> itemIngredients = new HashSet<>();
+
 
     @ManyToMany
     @JoinTable(
@@ -70,4 +68,3 @@ public class ItemEntity {
     )
     private Set<OptionalIngredientEntity> optionalIngredients;
 }
-
