@@ -83,7 +83,6 @@ public class ItemServiceImpl implements ItemService {
         // Volitelné ingredience
         if (itemDTO.getOptionalIngredientIds() != null && !itemDTO.getOptionalIngredientIds().isEmpty()) {
             Set<OptionalIngredientEntity> optionalIngredients = new HashSet<>(optionalIngredientRepository.findAllById(itemDTO.getOptionalIngredientIds()));
-            System.out.println(optionalIngredientRepository.findAllById(itemDTO.getOptionalIngredientIds()));
             entity.setOptionalIngredients(optionalIngredients);
         }
 
